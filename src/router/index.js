@@ -11,8 +11,8 @@ const routes = [
   { path: '/', component: HomePage },
   { path: '/about', component: AboutPage },
   { path: '/question', component: QuestionPage },
-  { path: '/que', component: QuePage }, // 新增路由
-  { path: '/success', component: SuccessPage }, // 新增路由
+  { path: '/que', component: QuePage }, 
+  { path: '/success', component: SuccessPage }, 
   { path: '/template', component: TemplatePage },
   { path: '/next', component: NextPage },
   { path: '/queEnd', component: QueEndPage },
