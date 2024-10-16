@@ -5,6 +5,7 @@
         <van-button class="base-button" @click="gotoTemplate" round size="large" >查看报告</van-button>
     </div>
   </div>
+  
 </template>
 
 <script>
@@ -13,17 +14,18 @@ export default {
   data() {
     return {
       successUrl : 'https://resource.cn-bj.ufileos.com/img/success.jpg',
-      id: this.$route.query.id || 98
+      info: null
     }
   },
   created(){
     //获取参数的值
-    console.log(this.id)
-    
+    this.info = this.$route.query.info;
+    //TODO 转到指定页面
   },
   methods: {
     gotoTemplate(){
-        //根据id获取对应的报告内容
+      //根据id获取对应的报告内容
+      this.$router.push({path: "/template", query: {info: this.info}})
     }
   }
 }

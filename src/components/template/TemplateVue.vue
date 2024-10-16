@@ -130,24 +130,30 @@ export default {
         focusHealthProblems: []
       },
       diseasesAnalysis: [],
+      info: null
     }
     
   },
   created(){
-    axios.post("https://ym.rtyouth.com/page/question/new/context",
+    this.info = JSON.parse(this.$route.query.info);
+    let queryInfo ={
+      id: this.info.id
+    }
+    axios.post("https://demo.rtyouth.com/page/question/context/id",queryInfo,
       {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}
     }).then(res=>{
-      let data = res.data.data.data.assessmentReport;
-      if(data){
+      if(res){
+        let data = res.data.data;
         //第一模块
-        let userInfo = data.userInfo;
+        let userInfo = JSON.parse(data.userInfo);
         this.userInfo.gender = userInfo.gender;
         this.userInfo.age = userInfo.age;
         this.userInfo.riskTipsTags = userInfo.riskTipsTags;
         this.userInfo.familyMedicalHistory = userInfo.familyMedicalHistory;
         this.userInfo.pastMedicalHistory = userInfo.pastMedicalHistory;
+
         //第二模块
-        let report = data.report;
+        let report = JSON.parse(data.report);
         this.report.healthIndex = report.healthIndex;
         this.report.healthReview = report.healthReview;
         this.report.diseasesAnalysis = report.diseasesAnalysis;
@@ -201,7 +207,10 @@ export default {
   },
   methods:{
     gotoNext(){
-      this.$router.push({path: "/next"})  
+      let queryInfo ={
+        id: this.info.id
+      }
+      this.$router.push({path: "/next", query: {info: JSON.stringify(queryInfo)}});  
     }
   }
 }

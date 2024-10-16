@@ -40,25 +40,21 @@
         确认提交
       </van-button>
     </van-form>
-    <van-overlay :show="show" @click="show = false">
-      <div class="wrapper" @click.stop>
-        <div class="block" >
-          <img src="https://resource.cn-bj.ufileos.com/img/error-img-title.jpg" alt="错误信息" class="error_message_image">  
-        </div>
-        <div class="relative-error">
-          温馨提示
-        </div>
-      </div>
-    </van-overlay>
+    
+    <ErrorPage v-if="showError" :errType="errType" :times="times" />
+    
   </div>
   
 </template>
 
 <script>
 import axios from 'axios'; // 导入 axios
-
+import ErrorPage from './ErrorVue.vue'
 export default {
   name: 'QuestionPage',
+  components:{
+    ErrorPage
+  },
   data() {
     return {
       birthday: '1991-08-07',
@@ -77,10 +73,9 @@ export default {
       appType: '',
       id: 0,
       queNo: 1,
-      showError: false,
-      errType: 0,
+      errType: 1,
       times: '',
-      show: true
+      showError: false
     }
   },
   created(){
@@ -90,7 +85,7 @@ export default {
         this.appName = this.$route.query.appName; // 获取 appName 参数
         this.appType = this.$route.query.appType; // 获取 appType 参数
     }
-    let checkUrl = "https://ym.rtyouth.com/page/goto/"+this.appName+"/"+this.appType+"?arg="+this.queId;
+    let checkUrl = "https://demo.rtyouth.com/page/goto/"+this.appName+"/"+this.appType+"?arg="+this.queId;
     //判断问卷是不是可用
     axios.get(checkUrl,
       {method: "get", headers: {"Content-Type": "application/json;charset=UTF-8"}
@@ -112,7 +107,8 @@ export default {
             let lastData = {
               appName: message.data.appName,
               appType: message.data.appType,
-              arg: message.data.queId
+              arg: message.data.queId,
+              id : message.data.id
             }
             this.$router.push({path: "/success", query: {info: JSON.stringify(lastData)}})
           }else if(message.code === 4007){ //活动还未开始
@@ -150,7 +146,7 @@ export default {
           weight: this.weight
         }
       }
-      let nextUrl = "https://ym.rtyouth.com/ai/info/yuanmeng/next";
+      let nextUrl = "https://demo.rtyouth.com/ai/info/yuanmeng/next";
       //执行问题提交操作
       axios.post(nextUrl,firstData,
         {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}
@@ -159,6 +155,7 @@ export default {
           let message =  res.data;
           if(message){
             if(message.code === 2000){
+              console.log(nextUrl)
               let lastData = message.data;
               lastData.appName = this.appName;
               lastData.appType = this.appType;
@@ -228,8 +225,8 @@ export default {
   }
 
   .block {
-    width: 80%;
-    height: 70%;
+    width: 70%;
+    height: 50%;
     background-color: #fff;
   }
   .error_message_image{
@@ -239,6 +236,30 @@ export default {
   }
   .relative-error{
     color: black;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+
+  .relative-line{
+    height: 1px;
+    background-color: #EDEDED;
+    margin:3rem;
+  }
+
+  .relative-message{
+    color: black;
+    font-weight: bold;
+  }
+
+  .relative-message div:last-child{
+    padding-bottom: 2rem;
+  }
+
+  .relative-button{
+    width: 10rem;
+    background-color: #50d2c8;
+    color: #FFF;
+    font-weight: bold;
   }
 
 </style>

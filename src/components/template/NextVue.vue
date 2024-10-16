@@ -40,7 +40,8 @@ export default {
       dietGuide: null,
       exerciseGuide: null,
       dailyLifeGuide: null,
-      medicalGuide: null
+      medicalGuide: null,
+      info : null
     }
   },
   components:{
@@ -50,19 +51,19 @@ export default {
     NutritionPage
   },
   created() {
-    axios.post("https://ym.rtyouth.com/page/question/new/context",
+    this.info = JSON.parse(this.$route.query.info);
+    axios.post("https://demo.rtyouth.com/page/question/context/id",this.info,
       {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}
     }).then(res=>{
-      let data = res.data.data.data.assessmentReport;
-      if(data){
-        //传递出去的数据
-        let healthGuide = data.healthGuide;
+      if(res){
+        let healthGuide = JSON.parse(res.data.data.guide);
+        let goodsListResult = JSON.parse(res.data.data.goodsList);
         this.dietGuide = healthGuide.dietGuide;
         this.exerciseGuide = healthGuide.exerciseGuide;
         this.dailyLifeGuide = healthGuide.dailyLifeGuide;
-        this.medicalGuide = data.goodsList;
+        this.medicalGuide = goodsListResult.data;
       }
-    }).catch(err=>{console.log(err)})
+    });
   },
   methods:{
     gotoTemplate(){

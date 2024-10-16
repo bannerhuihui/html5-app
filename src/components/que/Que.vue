@@ -77,10 +77,10 @@
                   @change="validateInputOther($event, index)"></van-field>
               </van-cell-group>
             </div>
-            <div v-if="!question.required">
+          </div>
+          <div v-if="!question.required">
               <a class="skip-a-a" href="#" @click.prevent="skipQuestion">暂时无法提供，直接跳过</a>
             </div>
-          </div>
         </div>
       </div>
       
@@ -221,7 +221,7 @@ export default {
           "id": this.id,
           "queNo": this.queNo - 1
         }
-        axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/before", queData,
+        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/before", queData,
           { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
         .then(res => {
           const data = res.data;
@@ -263,22 +263,19 @@ export default {
         }
         //获取下一页的问题
         if (this.last) {
-          axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/end", baseData,
+          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
-            const data = res.data;
-            if (data.code === 2000) {
-              if (data.data) {
-                this.$router.push({ path: "/success",query: {id: this.id }})
+            if(res && res.data.code === 2000){
+              const pageInfo = {
+                id: res.data.data.id,
+                goodsList: res.data.data.goodsList
               }
-            } else if (data.code === 4013) {
-              this.errType = 5;
-              this.times = ""
-              this.showError = true;
+              this.$router.push({ path: "/queEnd",query: {info: JSON.stringify(pageInfo)}})
             }
           }).catch(err => { console.log(err) })
         } else {
-          axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
+          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
             let data = res.data;
@@ -304,7 +301,7 @@ export default {
             values: this.values
           }
         }
-        axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
+        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
           {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
         .then(res => {
           let data = res.data;
@@ -366,7 +363,7 @@ export default {
           values: this.values
         }
       }
-      axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
+      axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
         { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
       .then(res => {
         let data = res.data;

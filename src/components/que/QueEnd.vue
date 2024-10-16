@@ -15,7 +15,7 @@
     
     <!-- 中间内容区域 -->
     <div class="content">
-        {{value}}
+        {{value}} {{ id }}
       <div class="upper-content">
         <h3>最后一题、目前您最想解决的问题（单选）</h3>
       </div>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-//import axios from 'axios'; // 导入 axios
+import axios from 'axios'; // 导入 axios
 export default {
   name: 'QueEndPage',
   data() {
@@ -51,7 +51,8 @@ export default {
         {type:"ZHYM",content:"综合免疫"}
       ],
       selectedOption: null, // 添加状态变量
-      value: ''
+      value: '',
+      id: 0
     }
   },
   methods: {
@@ -64,11 +65,35 @@ export default {
       }
     },
     pushQuestion(){
-        console.log("---> 保存提交")
+      const baseData = {
+        id: this.id,
+        value: this.value
+      }
+      axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/last/type", baseData,
+        {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
+      .then(res => {
+        if(res && res.data.code === 2000){
+          //到成功页
+          const pageInfo = {
+            id: res.data.data.id,
+            appName: res.data.data.appName,
+            appType: res.data.data.appType,
+            callBackUrl: res.data.data.callBackUrl,
+            callBackType: res.data.data.callBackType,
+            callBackBody: res.data.data.callBackBody
+          }
+          this.$router.push({ path: "/success",query: {info: JSON.stringify(pageInfo)}})
+        }
+      }).catch(err => { console.log(err) })
     },
     onClickLeft() {
       this.$router.go(-1); // 返回上一页
     },
+  },
+  created(){
+     let info = JSON.parse(this.$route.query.info);
+     this.id = info.id;
+     this.endQuestionList = info.goodsList;
   }
 }
 </script>
