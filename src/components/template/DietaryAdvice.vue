@@ -9,10 +9,10 @@
     </div>
     <div class="base-item">
       <div class="base-item-title">
-        <van-icon name="fire-o" size="1.7rem" color="#ee0a24" /><span v-if="info" style="color: #ee0a24; font-size: 1.2rem;">&nbsp;&nbsp;{{info.energyIntake}}</span>
+        <van-icon name="fire-o" size="1.7rem" color="#ee0a24" />&nbsp;&nbsp;<span >基础代谢</span><span v-if="info" style="color: #ee0a24; font-size: 1.2rem;">{{info.energyIntake}}</span>大卡
       </div>
       <div class="base-item-body">
-        <div class="like-p" v-if="info">{{ info.healthReview }}</div>
+        <div class="like-p" v-if="info">{{ info.energyDescription }}</div>
       </div>
     </div>
     <div class="base-item">
@@ -20,10 +20,23 @@
         <h2>三餐配比</h2>
       </div>
       <div class="base-item-body">
-        <div ref="pieChart" style="width: 100%; height: 400px;" ></div>
+        <div v-if="info">
+            <div class="three-meals-item" v-for="(mealDea,index) in info.mealRatios" :key="index">
+                <div class="three-meals-item-first">
+                    <div class="three-meals-item-first-content">
+                        <span class="three-meals-item-first-span-1">{{ getOneDayType(mealDea.mealType) }}</span>
+                        <span class="three-meals-item-first-span-2">能量占全天{{ mealDea.energyPercentLower }}~{{ mealDea.energyPercentUpper }}%</span>
+                    </div>
+                    <div class="three-meals-item-second">{{ mealDea.description }}</div>
+                </div>
+                <div v-if="index !== info.mealRatios.length -1 " class="three-meals-item-line"></div>
+            </div>
+            
+        </div>
+        <div v-if="isShowMap" ref="pieChart" style="width: 100%; height: 400px;" ></div>
         <div v-if="info">
             <div class="like-p" v-for="mealDea in info.mealDescriptions" :key="mealDea.mealType">
-                <div v-if="mealDea.mealType === 'MEAL' "> {{ mealDea.description }} </div>
+                <div style="padding-bottom: 0.4rem; padding-top:1rem" v-if="mealDea.mealType === 'MEAL' "> {{ mealDea.description }} </div>
                 <div v-if="mealDea.mealType === 'MEAL_EXTRA' "> {{ mealDea.description }} </div>
             </div>
         </div>
@@ -51,6 +64,7 @@
                 </div>
             </div>
         </div>
+        <li class="ul-message" >推荐平均每天摄入12种以上食物，每周25种以上。</li>        
       </div>
     </div>
     <div class="base-item">
@@ -80,18 +94,45 @@ export default {
         return {
             pieData: [], // 假设这是你的数据结构
             chartInstance: null, // 用于存储 ECharts 实例
-            time: null
+            time: null,
+            isShowMap: false
         }
     },
     mounted(){
-        this.time = setTimeout(() => {
-            this.executeAfterDelay();
-        }, 1000);
+        this.$nextTick(() => {
+            setTimeout(() => {this.executeAfterDelay()}, 1000);
+        })
+
+        
     },
     methods: {
+        getOneDayType(value){
+            let name = '';
+            switch(value){
+                case 'BREAKFAST':
+                    name = "早餐";
+                    break;
+                case 'BREAKFAST_EXTRA':
+                    name = "早加餐";
+                    break;
+                case 'LUNCH':
+                    name = "午餐";
+                    break;
+                case 'LUNCH_EXTRA':
+                    name = "午加餐";
+                    break;
+                case 'SUPPER':
+                    name = "晚餐";
+                    break;
+                case 'SUPPER_EXTRA':
+                    name = "晚加餐";
+                    break;
+            }
+            return name;
+        },
         executeAfterDelay(){
-            let data = this.info.mealRatios;
-            for (let index = 0; index < data.length; index++) {
+            let data = this.info?.mealRatios;
+            for (let index = 0; index < data?.length; index++) {
                 const element = data[index];
                 let name = '';
                 switch(element.mealType){
@@ -129,6 +170,7 @@ export default {
         },
         initChart(data) {
             const chartDom = this.$refs.pieChart;
+            if (!chartDom) return
             const myChart = echarts.init(chartDom);
             let option = {
                 tooltip: {
@@ -163,5 +205,47 @@ export default {
 </script>
 
 <style scoped>
+    .ul-message{
+        color: black;
+        font-size: 0.9rem;
+        padding-top: 1rem;
+        padding-block: 0.5rem;
+    }
+
+    .three-meals-item{
+        margin: 0.5rem;
+        margin-right: 1.5rem;
+    }
+
+    .three-meals-item-first-span-1{
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .three-meals-item-first-content{
+        display: flex; /* 使用 Flexbox 布局 */
+        justify-content: space-between; /* 左右对齐 */
+        align-items: center; /* 垂直居中对齐 */
+    }
+
+    .three-meals-item-first-span-2{
+        text-align: right; /* 右对齐 */
+        font-size: 0.8rem;
+        color: #2E5837;
+    }
+
+    .three-meals-item-second{
+        font-size: 1rem;
+        line-height: 1.5rem;
+        margin-top: 0.4rem;
+        color: black;
+    }
+
+    .three-meals-item-line{
+        margin-top: 1rem;
+        height: 1px;
+        background-color: black;
+    }
+
     
 </style>

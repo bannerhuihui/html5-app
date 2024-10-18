@@ -22,7 +22,7 @@
     </van-tabs>
   </div>
   <div class="end-div"></div>
-  <van-button class="base-button" @click="gotoTemplate" round size="large" >查看健康指导建议</van-button>
+  <van-button class="base-button" @click="gotoTemplate" round size="large" >查看健康评估报告</van-button>
 </template>
 
 <script>
@@ -67,7 +67,7 @@ export default {
   },
   methods:{
     gotoTemplate(){
-      this.$router.push({path: "/template"})  
+      this.$router.push({path: "/template", query: {info: JSON.stringify(this.info)}})  
     }
   }
 

@@ -2,9 +2,10 @@ const { defineConfig } = require('@vue/cli-service');
 const webpack = require('webpack');
 
 module.exports = defineConfig({
+  publicPath: '/ym/',
   transpileDependencies: true,
   devServer: {
-    port: 9999
+    port: 9998
   },
   configureWebpack: {
     plugins: [
@@ -13,4 +14,5 @@ module.exports = defineConfig({
       })
     ]
   }
+  
 });

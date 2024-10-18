@@ -15,9 +15,8 @@
     
     <!-- 中间内容区域 -->
     <div class="content">
-        {{value}} {{ id }}
       <div class="upper-content">
-        <h3>最后一题、目前您最想解决的问题（单选）</h3>
+        <h3>最后一题：目前您最想解决的问题（单选）</h3>
       </div>
       <div class="lower-content-container" style="position: relative;"> <!-- 设置相对定位 -->
         <div class="lower-content">
@@ -73,6 +72,17 @@ export default {
         {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
       .then(res => {
         if(res && res.data.code === 2000){
+          //到成功页
+          const pageInfo = {
+            id: res.data.data.id,
+            appName: res.data.data.appName,
+            appType: res.data.data.appType,
+            callBackUrl: res.data.data.callBackUrl,
+            callBackType: res.data.data.callBackType,
+            callBackBody: res.data.data.callBackBody
+          }
+          this.$router.push({ path: "/success",query: {info: JSON.stringify(pageInfo)}})
+        }else if(res && res.data.code === 4013){
           //到成功页
           const pageInfo = {
             id: res.data.data.id,

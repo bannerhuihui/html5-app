@@ -7,31 +7,41 @@
     <div class="que-line"></div>
     <van-form class="main-content"  @submit="handleSubmit">
       <van-cell-group class="que-input-group" inset>
-        <van-field class="van-field-input" label-align="right" v-model="birthday"  label="出生日期：" :disabled="true"  placeholder="">
+        <van-field 
+          ref="birthdayField" 
+          class="van-field-input light-input" 
+          label-align="right" 
+          v-model="birthday"  
+          label="出生日期："   
+          placeholder="" 
+          readonly>
         </van-field>
       </van-cell-group>
       <van-cell-group class="que-input-group" inset>
-        <van-field class="van-field-input" label-align="right"  :disabled="true"  label="性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别："  placeholder="" v-model="currentGender">
+        <van-field class="van-field-input" label-align="right" autosize  label="性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别："  placeholder="" v-model="currentGender" readonly>
         </van-field>
       </van-cell-group>
       <van-cell-group class="que-input-group" inset>
-        <van-field class="van-field-input" label-align="right" v-model="height" type="number" :min="minHeight" :max="maxHeight"  label="身&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高："  placeholder="170">
+        <van-field ref="heightField" class="van-field-input" label-align="right" v-model="height" type="number" :min="minHeight" :max="maxHeight"  label="身&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高："  placeholder="170">
           <template #button>
-            <span>厘米(CM)</span>
+            <span >厘米(CM)</span>
+            <a class="upd-a" href="#" @click.prevent="focusHeight">修改</a>
           </template>
         </van-field>
       </van-cell-group>
       <van-cell-group class="que-input-group" inset>
-        <van-field class="van-field-input" label-align="right" v-model="weight" type="number" :min="minWeight" :max="maxWeight" label="体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;重："  placeholder="61.5">
+        <van-field ref="weightField" class="van-field-input" autosize label-align="right" v-model="weight" type="number" :min="minWeight" :max="maxWeight" label="体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;重："  placeholder="61.5">
           <template #button>
-            <span>千克&nbsp;(KG)</span>
+            <span >千克&nbsp;(KG)</span>
+            <a class="upd-a" href="#" @click.prevent="focusWeight">修改</a>
           </template>
         </van-field>
       </van-cell-group>
       <van-cell-group class="que-input-group" inset>
-        <van-field class="van-field-input" label-align="right" type="number" v-model="waist" :min="minWaist" :max="maxWaist"  label="腰&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;围："  placeholder="61.5">
+        <van-field ref="waistField" class="van-field-input" autosize label-align="right" type="number" v-model="waist" :min="minWaist" :max="maxWaist"  label="腰&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;围："  placeholder="61.5">
           <template #button>
             <span>厘米(CM)</span>
+            <a class="upd-a" href="#" @click.prevent="focusWaist">修改</a>
           </template>
         </van-field>
       </van-cell-group>
@@ -113,11 +123,13 @@ export default {
             this.$router.push({path: "/success", query: {info: JSON.stringify(lastData)}})
           }else if(message.code === 4007){ //活动还未开始
             this.errType = 2;
-            this.times = message.code.beginTime;
+            this.times = message.data.beginTime;
+            console.log(message)
+            console.log(this.times)
             this.showError = true;
           }else if(message.code === 4005){ //活动已结束
             this.errType = 3;
-            this.times = message.code.endTime; 
+            this.times = message.data.endTime; 
             this.showError = true;
           }else if(message.code === 4004){ // 未找到
             this.errType = 4;
@@ -155,7 +167,6 @@ export default {
           let message =  res.data;
           if(message){
             if(message.code === 2000){
-              console.log(nextUrl)
               let lastData = message.data;
               lastData.appName = this.appName;
               lastData.appType = this.appType;
@@ -165,6 +176,15 @@ export default {
           }
         }
       })
+    },
+    focusHeight() {
+      this.$refs.heightField.focus(); // 聚焦到身高输入框
+    },
+    focusWeight() {
+      this.$refs.weightField.focus(); // 聚焦到体重输入框
+    },
+    focusWaist() {
+      this.$refs.waistField.focus(); // 聚焦到腰围输入框
     }
   }
 }
@@ -203,7 +223,7 @@ export default {
 }
 .van-field-input{
   background-color: #E9DCDC;
-  font-size: 1rem;
+  font-size: 0.78rem;
   font-weight: bold;
   color: black;
 }
@@ -261,5 +281,13 @@ export default {
     color: #FFF;
     font-weight: bold;
   }
+  .upd-a{
+    color: red;
+    padding-left: 0.5rem;
+  }
 
+  .light-input {
+    color: rgba(0, 0, 0, 0.5); /* 设置为浅色，调整透明度 */
+  }
 </style>
+

@@ -71,7 +71,6 @@ export default {
   }
 
   .base-chat-img{
-    padding-top: 1rem;
     width: 3rem;
     height: 3rem;
   }
@@ -90,6 +89,7 @@ export default {
     list-style-type: disc;
     color: #000;
     padding-left: 1rem;
+    padding-right: 1rem;
     padding-bottom: 0.6rem;
   }
 
@@ -126,6 +126,10 @@ export default {
     text-align: center; /* 文本居中 */
     z-index: 1; /* 确保文字在图片上方 */
     color: #FFF;
+  }
+
+  .like-p{
+    margin-right: 1rem;
   }
   :root {
     --van-circle-text-color: #54bcbd;

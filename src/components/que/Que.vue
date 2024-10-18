@@ -7,19 +7,19 @@
         left-arrow
         @click-left="onClickLeft"
       />
-      <!-- 进度条 -->
+    </div>
+    
+    <!-- 中间内容区域 -->
+    <div class="content">
+       <!-- 进度条 -->
       <div class="progress-container">
         <div class="progress-info">当前进度 {{ progress }}%</div>
         <van-progress class="progress-bar" :percentage="progress" stroke-width="16" :show-pivot="false" color="#6DDED6"/>
       </div>
-    </div>
-
-    <!-- 中间内容区域 -->
-    <div class="content">
       <div class="upper-content">
         <h3>{{ queNo - 1 }}、{{ question.questionContents[0] }}{{ getQuestionTypeText }}</h3>
       </div>
-      <div class="lower-content-container" style="position: relative;"> <!-- 设置相对定位 -->
+      <div class="lower-content-container"> <!-- 设置相对定位 -->
         <div class="lower-content" v-if="questionType === '1'">
           <div v-for="option in question.options" :key="option.optionCode">
             <van-button class="base-que-button" :class="{'button-que-button-active': selectedOption === option.optionValue}" :value="option.optionValue" type="primary" block round @click="radioUpd(option.optionValue)">
@@ -85,7 +85,6 @@
       </div>
       
     </div>
-    <div class="shadow-effect" v-if="isOverflow"></div> <!-- 阴影效果 -->
     <!-- 底部区域 -->
     <div class="footer">
       <van-button 
@@ -152,12 +151,10 @@ export default {
       totalCount: 0,
       showError: false,
       overflow: false, // 新增状态变量
+      isScrolling: false, // 新增状态变量
     }
   },
   computed: {
-    isOverflow() {
-      return this.overflow; // 返回状态变量
-    },
     getQuestionTypeText() {
       switch (this.questionType) {
         case '1':
@@ -198,7 +195,17 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.checkOverflow(); // 初始检查
+      const container = this.$el.querySelector('.lower-content-container');
+      if (container) {
+        container.addEventListener('scroll', this.handleScroll); // 监听滚动事件
+      }
     });
+  },
+  beforeUnmount() { // 修改为 beforeUnmount
+    const container = this.$el.querySelector('.lower-content-container');
+    if (container) {
+      container.removeEventListener('scroll', this.handleScroll); // 移除滚动事件监听
+    }
   },
   methods: {
     checkOverflow() {
@@ -206,6 +213,12 @@ export default {
       if (container) {
         this.overflow = container.scrollHeight > container.clientHeight; // 更新 overflow 状态
       }
+    },
+    handleScroll() {
+      this.isScrolling = true; // 开始滚动
+      this.$nextTick(() => {
+        this.isScrolling = false; // 结束滚动
+      });
     },
     onClickLeft() {
       this.$router.go(-1); // 返回上一页
@@ -263,18 +276,33 @@ export default {
         }
         //获取下一页的问题
         if (this.last) {
+          console.log("---> 我是最后页的参数")
+          console.log(baseData)
           axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
-            if(res && res.data.code === 2000){
+            
+            if(res && res.data.code === 2000){    
               const pageInfo = {
                 id: res.data.data.id,
                 goodsList: res.data.data.goodsList
-              }
+              }          
               this.$router.push({ path: "/queEnd",query: {info: JSON.stringify(pageInfo)}})
+            }else if(res && res.data.code === 4013){
+              const pageLastInfo = {
+                id: res.data.data.id,
+                appName: res.data.data.appName,
+                appType: res.data.data.appType,
+                callBackUrl: res.data.data.callBackUrl,
+                callBackType: res.data.data.callBackType,
+                callBackBody: res.data.data.callBackBody
+              }
+              this.$router.push({ path: "/success",query: {info: JSON.stringify(pageLastInfo)}})
             }
           }).catch(err => { console.log(err) })
         } else {
+          console.log("---> 我是普通页的参数")
+          console.log(baseData)
           axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
@@ -423,7 +451,6 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   background-color: #FFF;
 }
 
@@ -455,27 +482,15 @@ export default {
 .content {
   display: flex;
   flex-direction: column; /* 垂直排列上下部分 */
-  padding: 2rem;
+  padding: 1rem 1rem 0 1rem;
   text-align: center;
-  margin-top: 100px; /* 留出顶部区域的空间 */
-  margin-bottom: 100px; /* 留出底部区域的空间 */
-  overflow-y: hidden; /* 允许内容溢出时滚 */
+  margin-top: 2rem; /* 留出顶部区域的空间 */
 }
 
 .lower-content-container {
   flex: 1; /* 占据剩余空间 */
   overflow-y: auto; /* 允许内容溢出时滚动 */
-  position: absolute
-}
-
-.shadow-effect {
-  position: absolute; /* 绝对定位 */
-  bottom: 0; /* 固定在底部 */
-  left: 0;
-  right: 0;
-  height: 30px; /* 阴影的高度 */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(255, 255, 255, 0) 100%); /* 更明显的渐变效果 */
-  pointer-events: none; /* 使阴影不影响点击事件 */
+  position: relative; /* 确保阴影在容器内 */
 }
 
 .que-input-group {
@@ -491,8 +506,8 @@ export default {
 }
 
 .upper-content {
-  padding: 1rem; /* 可选：设置内边距 */
-  text-align: left;
+  padding: 1rem; /* 设置内边距为1rem，增加内容与边界的间距 */
+  text-align: left; /* 设置文本左对齐 */
 }
 
 .lower-content {
@@ -522,7 +537,6 @@ export default {
 }
 
 .footer {
-  position: fixed;
   bottom: 10px; /* 调整底部距离 */
   left: 0;
   right: 0;

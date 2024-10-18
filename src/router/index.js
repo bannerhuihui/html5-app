@@ -1,29 +1,54 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from '../components/Home.vue';
-import AboutPage from '../components/About.vue';
-import QuestionPage from '../components/que/QuestionVue.vue'; // 更新路径
-import QuePage from '../components/que/Que.vue'; // 导入新的组件
-import SuccessPage from '../components/que/SuccessVue.vue'; // 导入新的组件
-import TemplatePage from '../components/template/TemplateVue.vue'
-import NextPage from '../components/template/NextVue.vue'
-import QueEndPage from '../components/que/QueEnd.vue'
+import {createRouter, createWebHashHistory} from 'vue-router'
+
+
 const routes = [
-  { path: '/', component: HomePage },
-  { path: '/about', component: AboutPage },
-  { path: '/question', component: QuestionPage },
-  { path: '/que', component: QuePage }, 
-  { path: '/success', component: SuccessPage }, 
-  { path: '/template', component: TemplatePage },
-  { path: '/next', component: NextPage },
-  { path: '/queEnd', component: QueEndPage },
-];
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('@/components/HelloWorld')
+  },{
+    path: '/question',
+    name: 'QuestionPage',
+    component: () => import('@/components/que/QuestionVue')
+  },{
+    path: '/que',
+    name: 'QuePage',
+    component: () => import('@/components/que/Que')
+  },{
+    path: '/success',
+    name: 'SuccessPage',
+    component: () => import('@/components/que/SuccessVue')
+  },{
+    path: '/template',
+    name: 'TemplatePage',
+    component: () => import('@/components/template/TemplateVue')
+  },{
+    path: '/next',
+    name: 'NextPage',
+    component: () => import('@/components/template/NextVue')
+  },{
+    path: '/queEnd',
+    name: 'QueEndPage',
+    component: () => import('@/components/que/QueEnd')
+  }
+
+]
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior() {
-    return { top: 0 }; // 每次页面跳转时，滚动位置设置到顶部
+  history: createWebHashHistory(),
+  routes
+})
+router.beforeEach(function (to, from, next) {
+  if (to.path.startsWith('/insider')) {
+    //
   }
-});
 
-export default router;
+  if (to.path.startsWith('/vip')) {
+    // 充值的也可以考虑全局控制
+    // 跳转到充值页面
+  }
+
+  next()
+})
+
+export default router
