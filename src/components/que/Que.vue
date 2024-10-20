@@ -29,7 +29,7 @@
         </div>
         <div class="lower-content" v-if="questionType === '2'">
           <div v-for="option in question.options" :key="option.optionCode">
-            <van-button class="base-que-button" :class="{'button-que-button-active': selectedOptions.includes(option.optionValue)}" :value="option.optionValue" type="primary" block round @click="checkboxUpd(option.optionValue)">
+            <van-button v-if="option.optionContents[0] !== '甲亢' && option.optionContents[0] !== '甲减'" class="base-que-button" :class="{'button-que-button-active': selectedOptions.includes(option.optionValue)}" :value="option.optionValue" type="primary" block round @click="checkboxUpd(option.optionValue)">
               {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0]}}
             </van-button>           
           </div>
@@ -212,6 +212,7 @@ export default {
       const container = this.$el.querySelector('.lower-content-container');
       if (container) {
         this.overflow = container.scrollHeight > container.clientHeight; // 更新 overflow 状态
+        this.isOverflow = this.overflow; // 更新 isOverflow 状态
       }
     },
     handleScroll() {
