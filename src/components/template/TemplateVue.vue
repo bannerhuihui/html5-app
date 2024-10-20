@@ -14,7 +14,7 @@
         </ul>
       </van-col>
       <van-col span="14">
-        <div class="user-info-right">{{ userInfo.riskTipsTags[0] }}</div>
+        <div class="user-info-right" v-if="userInfo.riskTipsTags" >{{ userInfo.riskTipsTags[0] }}</div>
       </van-col>
     </van-row>
     <div class="user-info-line"></div>
@@ -159,6 +159,13 @@ export default {
         this.report.diseasesAnalysis = report.diseasesAnalysis;
         this.report.indicatorAnalysis = report.indicatorAnalysis;
         this.report.riskFactorAnalysis = report.riskFactorAnalysis;
+        try{
+        this.report.riskFactorAnalysis.sort((a, b) => {
+          return b.riskFactorLevel - a.riskFactorLevel; // 升序排序
+        });
+        }catch(err){
+          console.log(err)
+        }
         this.report.focusHealthProblems = report.focusHealthProblems;
         this.pieData = [
             {value: parseInt(this.report.healthIndex,10),name: 'A',itemStyle: { color: '#51d2c8' }},
