@@ -23,14 +23,14 @@
         <div class="lower-content" v-if="questionType === '1'">
           <div v-for="option in question.options" :key="option.optionCode">
             <van-button class="base-que-button" :class="{'button-que-button-active': selectedOption === option.optionValue}" :value="option.optionValue" type="primary" block round @click="radioUpd(option.optionValue)">
-              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0]}}
+              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0] === "嗳气疾病" ? "嗳气疾病（打嗝或打饱嗝）":option.optionContents[0] }}
             </van-button>           
           </div>
         </div>
         <div class="lower-content" v-if="questionType === '2'">
           <div v-for="option in question.options" :key="option.optionCode">
             <van-button v-if="option.optionContents[0] !== '甲亢' && option.optionContents[0] !== '甲减'" class="base-que-button" :class="{'button-que-button-active': selectedOptions.includes(option.optionValue)}" :value="option.optionValue" type="primary" block round @click="checkboxUpd(option.optionValue)">
-              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0]}}
+              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0] === "嗳气疾病" ? "嗳气疾病（打嗝或打饱嗝）":option.optionContents[0] }}
             </van-button>           
           </div>
         </div>
