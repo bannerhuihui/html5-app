@@ -69,15 +69,15 @@ export default {
     return {
       birthday: '1991-08-07',
       gender: '男',
-      height: 0,
-      maxHeight: 300,
-      minHeight: 30,
-      waist: 0,
+      height: 160,
+      maxHeight: 230,
+      minHeight: 100,
+      waist: 85,
       maxWaist: 200,
-      minWaist: 25,
-      weight: 0,
+      minWaist: 50,
+      weight: 55,
       maxWeight: 200,
-      minWeight: 40,
+      minWeight: 25,
       queId: '',
       appName: '',
       appType: '',
@@ -158,6 +158,7 @@ export default {
           weight: this.weight
         }
       }
+      console.log(JSON.stringify(firstData))
       let nextUrl = "https://demo.rtyouth.com/ai/info/yuanmeng/next";
       //执行问题提交操作
       axios.post(nextUrl,firstData,

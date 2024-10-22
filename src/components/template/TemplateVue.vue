@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="template-container ">
     <img :src="imgUrl" alt="Template Image" class="base-img" />
     <div class="text-overlay">
@@ -104,6 +105,8 @@
     <div class="end-div"></div>
     <van-button class="base-button" @click="gotoNext" round size="large" >查看健康指导建议</van-button>
   </div>
+  </div>
+  
 </template>
 
 <script>
@@ -184,7 +187,7 @@ export default {
         family.forEach(element => {
           str += element +'，';
         });
-        if(str.length >10){
+        if(str.length >17){
           return str.slice(0,5) + '...';
         }
         return str.slice(0,-1);
@@ -198,7 +201,7 @@ export default {
         past.forEach(element => {
           str += element +'，';
         });
-        if(str.length >10){
+        if(str.length >17){
           return str.slice(0,5) + '...';
         }
         return str.slice(0,-1);
