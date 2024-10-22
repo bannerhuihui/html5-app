@@ -142,7 +142,7 @@ export default {
     let queryInfo ={
       id: this.info.id
     }
-    axios.post("https://demo.rtyouth.com/page/question/context/id",queryInfo,
+    axios.post("https://ym.rtyouth.com/page/question/context/id",queryInfo,
       {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}
     }).then(res=>{
       if(res){

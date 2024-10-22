@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="base-item">
       <div class="base-item-title">
         <h2>目标</h2>
@@ -31,6 +32,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 <script>
 export default {

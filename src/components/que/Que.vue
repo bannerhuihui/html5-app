@@ -235,7 +235,7 @@ export default {
           "id": this.id,
           "queNo": this.queNo - 1
         }
-        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/before", queData,
+        axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/before", queData,
           { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
         .then(res => {
           const data = res.data;
@@ -279,7 +279,7 @@ export default {
         if (this.last) {
           console.log("---> 我是最后页的参数")
           console.log(baseData)
-          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData,
+          axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/end", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
             
@@ -304,7 +304,7 @@ export default {
         } else {
           console.log("---> 我是普通页的参数")
           console.log(baseData)
-          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
+          axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
             {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
           .then(res => {
             let data = res.data;
@@ -330,7 +330,7 @@ export default {
             values: this.values
           }
         }
-        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
+        axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
           {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
         .then(res => {
           let data = res.data;
@@ -392,7 +392,7 @@ export default {
           values: this.values
         }
       }
-      axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
+      axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/next", baseData,
         { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
       .then(res => {
         let data = res.data;

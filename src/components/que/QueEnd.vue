@@ -68,7 +68,7 @@ export default {
         id: this.id,
         value: this.value
       }
-      axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/last/type", baseData,
+      axios.post("https://ym.rtyouth.com/ai/info/yuanmeng/last/type", baseData,
         {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
       .then(res => {
         if(res && res.data.code === 2000){

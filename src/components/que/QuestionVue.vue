@@ -95,7 +95,7 @@ export default {
         this.appName = this.$route.query.appName; // 获取 appName 参数
         this.appType = this.$route.query.appType; // 获取 appType 参数
     }
-    let checkUrl = "https://demo.rtyouth.com/page/goto/"+this.appName+"/"+this.appType+"?arg="+this.queId;
+    let checkUrl = "https://ym.rtyouth.com/page/goto/"+this.appName+"/"+this.appType+"?arg="+this.queId;
     //判断问卷是不是可用
     axios.get(checkUrl,
       {method: "get", headers: {"Content-Type": "application/json;charset=UTF-8"}
@@ -159,7 +159,7 @@ export default {
         }
       }
       console.log(JSON.stringify(firstData))
-      let nextUrl = "https://demo.rtyouth.com/ai/info/yuanmeng/next";
+      let nextUrl = "https://ym.rtyouth.com/ai/info/yuanmeng/next";
       //执行问题提交操作
       axios.post(nextUrl,firstData,
         {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}

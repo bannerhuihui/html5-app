@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="template-container ">
     <img :src="imgUrl" alt="Template Image" class="base-img" />
     <div class="text-overlay">
@@ -23,6 +24,7 @@
   </div>
   <div class="end-div"></div>
   <van-button class="base-button" @click="gotoTemplate" round size="large" >查看健康评估报告</van-button>
+  </div>
 </template>
 
 <script>
@@ -52,7 +54,7 @@ export default {
   },
   created() {
     this.info = JSON.parse(this.$route.query.info);
-    axios.post("https://demo.rtyouth.com/page/question/context/id",this.info,
+    axios.post("https://ym.rtyouth.com/page/question/context/id",this.info,
       {method: "post", headers: {"Content-Type": "application/json;charset=UTF-8"}
     }).then(res=>{
       if(res){
