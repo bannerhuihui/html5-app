@@ -1,5 +1,6 @@
 <template>
-    <div class="base-item">
+    <div>
+        <div class="base-item">
       <div class="base-item-title">
         <h2>目标</h2>
       </div>
@@ -78,6 +79,7 @@
             </li>
         </ul>
       </div>
+    </div>
     </div>
 </template>
 <script>

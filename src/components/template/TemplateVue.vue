@@ -160,7 +160,24 @@ export default {
         this.report.healthIndex = report.healthIndex;
         this.report.healthReview = report.healthReview;
         this.report.diseasesAnalysis = report.diseasesAnalysis;
+        const sortOrder = ['WAISTLINE', 'BMI', 'DBP', 'SBP', 'FBG', 'PBG'];
+        report.indicatorAnalysis.sort((a, b) => {
+          const indexA = sortOrder.indexOf(a.indicator);
+          const indexB = sortOrder.indexOf(b.indicator);
+          // 如果 indicator 在 sortOrder 中则根据索引排序，否则放在后面
+          if (indexA > -1 && indexB > -1) {
+            return indexA - indexB; // 都在排序序列中，按序列排序
+          } else if (indexA > -1) {
+            return -1; // a 在排序序列中，放前面
+          } else if (indexB > -1) {
+            return 1; // b 在排序序列中，放前面
+          } else {
+            return 0; // 都不在排序序列中，维持原顺序
+          }
+        });
         this.report.indicatorAnalysis = report.indicatorAnalysis;
+        //腰围、BMI、舒张压、收缩压、空腹血糖、餐后血糖。
+        //WAISTLINE BMI DBP SBP FBG PBG
         this.report.riskFactorAnalysis = report.riskFactorAnalysis;
         try{
         this.report.riskFactorAnalysis.sort((a, b) => {

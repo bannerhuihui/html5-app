@@ -1,5 +1,6 @@
 <template>
-  <div class="template-container ">
+  <div>
+<div class="template-container ">
     <img :src="imgUrl" alt="Template Image" class="base-img" />
     <div class="text-overlay">
       <h3 class="title">{{ titleMessage }}</h3>
@@ -23,6 +24,8 @@
   </div>
   <div class="end-div"></div>
   <van-button class="base-button" @click="gotoTemplate" round size="large" >查看健康评估报告</van-button>
+  </div>
+  
 </template>
 
 <script>
