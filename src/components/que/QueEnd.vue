@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import axios from "axios"; // 导入 axios
+import {getLastType} from "../../api/manager.js"
 export default {
   name: "QueEndPage",
   data() {
@@ -83,13 +83,8 @@ export default {
         id: this.id,
         value: this.value,
       };
-      axios
-        .post("https://demo.rtyouth.com/ai/info/yuanmeng/last/type", baseData, {
-          method: "post",
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-        })
-        .then((res) => {
-          if (res && res.data.code === 2000) {
+      getLastType(baseData).then((res) =>{
+        if (res && res.data.code === 2000) {
             //到成功页
             const pageInfo = {
               id: res.data.data.id,
@@ -118,10 +113,7 @@ export default {
               query: { info: JSON.stringify(pageInfo) },
             });
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      })
     },
     onClickLeft() {
       this.$router.go(-1); // 返回上一页

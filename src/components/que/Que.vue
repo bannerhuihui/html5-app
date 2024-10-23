@@ -188,7 +188,11 @@
 </template>
 
 <script>
-import axios from "axios"; // 导入 axios
+import {
+  getQuestionBefor,
+  getQuestionEnd,
+  getQuestionNext,
+} from "../../api/manager.js";
 export default {
   name: "QuePage",
   data() {
@@ -319,29 +323,21 @@ export default {
           id: this.id,
           queNo: this.queNo - 1,
         };
-        axios
-          .post("https://demo.rtyouth.com/ai/info/yuanmeng/before", queData, {
-            method: "post",
-            headers: { "Content-Type": "application/json;charset=UTF-8" },
-          })
-          .then((res) => {
-            const data = res.data;
-            if (data.code === 2000) {
-              this.values = [];
-              this.selectedOptions = [];
-              this.selectedOption = null;
-              this.id = data.data.id;
-              this.questionType = data.data.questionType;
-              this.queNo = data.data.queNo;
-              this.last = data.data.last;
-              this.totalCount = data.data.total;
-              this.questionCode = data.data.questionCode;
-              this.question = JSON.parse(data.data.question);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        getQuestionBefor(queData).then((res) => {
+          const data = res.data;
+          if (data.code === 2000) {
+            this.values = [];
+            this.selectedOptions = [];
+            this.selectedOption = null;
+            this.id = data.data.id;
+            this.questionType = data.data.questionType;
+            this.queNo = data.data.queNo;
+            this.last = data.data.last;
+            this.totalCount = data.data.total;
+            this.questionCode = data.data.questionCode;
+            this.question = JSON.parse(data.data.question);
+          }
+        });
       }
     },
     onNext() {
@@ -370,82 +366,33 @@ export default {
         }
         //获取下一页的问题
         if (this.last) {
-          console.log("---> 我是最后页的参数");
-          console.log(baseData);
-          axios
-            .post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData, {
-              method: "post",
-              headers: { "Content-Type": "application/json;charset=UTF-8" },
-            })
-            .then((res) => {
-              if (res && res.data.code === 2000) {
-                const pageInfo = {
-                  id: res.data.data.id,
-                  goodsList: res.data.data.goodsList,
-                };
-                this.$router.push({
-                  path: "/queEnd",
-                  query: { info: JSON.stringify(pageInfo) },
-                });
-              } else if (res && res.data.code === 4013) {
-                const pageLastInfo = {
-                  id: res.data.data.id,
-                  appName: res.data.data.appName,
-                  appType: res.data.data.appType,
-                  callBackUrl: res.data.data.callBackUrl,
-                  callBackType: res.data.data.callBackType,
-                  callBackBody: res.data.data.callBackBody,
-                };
-                this.$router.push({
-                  path: "/success",
-                  query: { info: JSON.stringify(pageLastInfo) },
-                });
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          getQuestionEnd(baseData).then((res) => {
+            if (res && res.data.code === 2000) {
+              const pageInfo = {
+                id: res.data.data.id,
+                goodsList: res.data.data.goodsList,
+              };
+              this.$router.push({
+                path: "/queEnd",
+                query: { info: JSON.stringify(pageInfo) },
+              });
+            } else if (res && res.data.code === 4013) {
+              const pageLastInfo = {
+                id: res.data.data.id,
+                appName: res.data.data.appName,
+                appType: res.data.data.appType,
+                callBackUrl: res.data.data.callBackUrl,
+                callBackType: res.data.data.callBackType,
+                callBackBody: res.data.data.callBackBody,
+              };
+              this.$router.push({
+                path: "/success",
+                query: { info: JSON.stringify(pageLastInfo) },
+              });
+            }
+          });
         } else {
-          console.log("---> 我是普通页的参数");
-          console.log(baseData);
-          axios
-            .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
-              method: "post",
-              headers: { "Content-Type": "application/json;charset=UTF-8" },
-            })
-            .then((res) => {
-              let data = res.data;
-              if (data.code === 2000) {
-                this.values = [];
-                this.selectedOptions = [];
-                this.selectedOption = null;
-                this.id = data.data.id;
-                this.questionType = data.data.questionType;
-                this.queNo = data.data.queNo;
-                this.last = data.data.last;
-                this.questionCode = data.data.questionCode;
-                this.totalCount = data.data.total;
-                this.question = JSON.parse(data.data.question);
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-      } else {
-        baseData = {
-          queNo: this.queNo,
-          id: this.id,
-          data: {
-            values: this.values,
-          },
-        };
-        axios
-          .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
-            method: "post",
-            headers: { "Content-Type": "application/json;charset=UTF-8" },
-          })
-          .then((res) => {
+          getQuestionNext(baseData).then((res) => {
             let data = res.data;
             if (data.code === 2000) {
               this.values = [];
@@ -456,13 +403,34 @@ export default {
               this.queNo = data.data.queNo;
               this.last = data.data.last;
               this.questionCode = data.data.questionCode;
-              this.question = JSON.parse(data.data.question);
               this.totalCount = data.data.total;
+              this.question = JSON.parse(data.data.question);
             }
-          })
-          .catch((err) => {
-            console.log(err);
           });
+        }
+      } else {
+        baseData = {
+          queNo: this.queNo,
+          id: this.id,
+          data: {
+            values: this.values,
+          },
+        };
+        getQuestionNext(baseData).then((res) => {
+          let data = res.data;
+          if (data.code === 2000) {
+            this.values = [];
+            this.selectedOptions = [];
+            this.selectedOption = null;
+            this.id = data.data.id;
+            this.questionType = data.data.questionType;
+            this.queNo = data.data.queNo;
+            this.last = data.data.last;
+            this.questionCode = data.data.questionCode;
+            this.question = JSON.parse(data.data.question);
+            this.totalCount = data.data.total;
+          }
+        });
       }
     },
     radioUpd(value) {
@@ -512,29 +480,21 @@ export default {
           values: this.values,
         },
       };
-      axios
-        .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
-          method: "post",
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-        })
-        .then((res) => {
-          let data = res.data;
-          if (data.code === 2000) {
-            this.values = [];
-            this.selectedOptions = [];
-            this.selectedOption = null;
-            this.id = data.data.id;
-            this.questionType = data.data.questionType;
-            this.queNo = data.data.queNo;
-            this.last = data.data.last;
-            this.questionCode = data.data.questionCode;
-            this.totalCount = data.data.total;
-            this.question = JSON.parse(data.data.question);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      getQuestionNext(baseData).then((res) => {
+        let data = res.data;
+        if (data.code === 2000) {
+          this.values = [];
+          this.selectedOptions = [];
+          this.selectedOption = null;
+          this.id = data.data.id;
+          this.questionType = data.data.questionType;
+          this.queNo = data.data.queNo;
+          this.last = data.data.last;
+          this.questionCode = data.data.questionCode;
+          this.totalCount = data.data.total;
+          this.question = JSON.parse(data.data.question);
+        }
+      });
     },
     placeholder(value) {
       if (value === "收缩压") {

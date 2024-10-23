@@ -100,8 +100,9 @@
 </template>
 
 <script>
-import axios from "axios"; // 导入 axios
 import ErrorPage from "./ErrorVue.vue";
+import { checkUrl, firstPageCommit } from "../../api/manager.js";
+
 export default {
   name: "QuestionPage",
   components: {
@@ -137,65 +138,53 @@ export default {
       this.appName = this.$route.query.appName; // 获取 appName 参数
       this.appType = this.$route.query.appType; // 获取 appType 参数
     }
-    let checkUrl =
-      "https://demo.rtyouth.com/page/goto/" +
-      this.appName +
-      "/" +
-      this.appType +
-      "?arg=" +
-      this.queId;
     //判断问卷是不是可用
-    axios
-      .get(checkUrl, {
-        method: "get",
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-      })
-      .then((res) => {
-        if (res) {
-          let message = res.data;
-          if (message) {
-            if (message.code === 2000) {
-              let user = message.data;
-              if (user) {
-                this.birthday = user.birthday;
-                this.gender = user.gender;
-                this.height = user.height;
-                this.waist = user.waist;
-                this.weight = user.weight;
-                this.id = user.id;
-              }
-            } else if (message.code === 4006) {
-              let lastData = {
-                appName: message.data.appName,
-                appType: message.data.appType,
-                arg: message.data.queId,
-                id: message.data.id,
-              };
-              this.$router.push({
-                path: "/success",
-                query: { info: JSON.stringify(lastData) },
-              });
-            } else if (message.code === 4007) {
-              //活动还未开始
-              this.errType = 2;
-              this.times = message.data.beginTime;
-              console.log(message);
-              console.log(this.times);
-              this.showError = true;
-            } else if (message.code === 4005) {
-              //活动已结束
-              this.errType = 3;
-              this.times = message.data.endTime;
-              this.showError = true;
-            } else if (message.code === 4004) {
-              // 未找到
-              this.errType = 4;
-              this.times = "";
-              this.showError = true;
+    checkUrl(this.appName, this.appType, this.queId).then((res) => {
+      if (res) {
+        let message = res.data;
+        if (message) {
+          if (message.code === 2000) {
+            let user = message.data;
+            if (user) {
+              this.birthday = user.birthday;
+              this.gender = user.gender;
+              this.height = user.height;
+              this.waist = user.waist;
+              this.weight = user.weight;
+              this.id = user.id;
             }
+          } else if (message.code === 4006) {
+            let lastData = {
+              appName: message.data.appName,
+              appType: message.data.appType,
+              arg: message.data.queId,
+              id: message.data.id,
+            };
+            this.$router.push({
+              path: "/success",
+              query: { info: JSON.stringify(lastData) },
+            });
+          } else if (message.code === 4007) {
+            //活动还未开始
+            this.errType = 2;
+            this.times = message.data.beginTime;
+            console.log(message);
+            console.log(this.times);
+            this.showError = true;
+          } else if (message.code === 4005) {
+            //活动已结束
+            this.errType = 3;
+            this.times = message.data.endTime;
+            this.showError = true;
+          } else if (message.code === 4004) {
+            // 未找到
+            this.errType = 4;
+            this.times = "";
+            this.showError = true;
           }
         }
-      });
+      }
+    });
   },
   computed: {
     currentGender() {
@@ -215,31 +204,24 @@ export default {
           weight: this.weight,
         },
       };
-      console.log(JSON.stringify(firstData));
-      let nextUrl = "https://demo.rtyouth.com/ai/info/yuanmeng/next";
       //执行问题提交操作
-      axios
-        .post(nextUrl, firstData, {
-          method: "post",
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-        })
-        .then((res) => {
-          if (res) {
-            let message = res.data;
-            if (message) {
-              if (message.code === 2000) {
-                let lastData = message.data;
-                lastData.appName = this.appName;
-                lastData.appType = this.appType;
-                lastData.queId = this.queId;
-                this.$router.push({
-                  path: "/que",
-                  query: { info: JSON.stringify(lastData) },
-                });
-              }
+      firstPageCommit(firstData).then((res) => {
+        if (res) {
+          let message = res.data;
+          if (message) {
+            if (message.code === 2000) {
+              let lastData = message.data;
+              lastData.appName = this.appName;
+              lastData.appType = this.appType;
+              lastData.queId = this.queId;
+              this.$router.push({
+                path: "/que",
+                query: { info: JSON.stringify(lastData) },
+              });
             }
           }
-        });
+        }
+      });
     },
     focusHeight() {
       this.$refs.heightField.focus(); // 聚焦到身高输入框

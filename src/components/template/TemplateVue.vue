@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import {getTemplateById} from "../../api/manager.js"
 export default {
   data() {
     return {
@@ -172,13 +172,8 @@ export default {
     let queryInfo = {
       id: this.info.id,
     };
-    axios
-      .post("https://demo.rtyouth.com/page/question/context/id", queryInfo, {
-        method: "post",
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-      })
-      .then((res) => {
-        if (res) {
+    getTemplateById(queryInfo).then((res) => {
+if (res) {
           let data = res.data.data;
           //第一模块
           let userInfo = JSON.parse(data.userInfo);
@@ -235,7 +230,7 @@ export default {
           //第三模块
           this.diseasesAnalysis = report.diseasesAnalysis;
         }
-      });
+    })
   },
   computed: {
     familyMedicalHistory() {

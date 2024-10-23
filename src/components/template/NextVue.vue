@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import axios from "axios"; // 导入 axios
 import DietaryPage from "./DietaryAdvice.vue"; // 导入饮食建议模板
 import ExercisePage from "./ExerciseAdvice.vue"; // 导入饮食建议模板
 import LifestylePage from "./LifestyleAdvice.vue"; // 导入饮食建议模板
 import NutritionPage from "./NutritionPlan.vue"; // 导入饮食建议模板
+import { getTemplateById } from "../../api/manager.js";
 export default {
   name: "NextPage",
   data() {
@@ -60,21 +60,16 @@ export default {
   },
   created() {
     this.info = JSON.parse(this.$route.query.info);
-    axios
-      .post("https://demo.rtyouth.com/page/question/context/id", this.info, {
-        method: "post",
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-      })
-      .then((res) => {
-        if (res) {
-          let healthGuide = JSON.parse(res.data.data.guide);
-          let goodsListResult = JSON.parse(res.data.data.goodsList);
-          this.dietGuide = healthGuide.dietGuide;
-          this.exerciseGuide = healthGuide.exerciseGuide;
-          this.dailyLifeGuide = healthGuide.dailyLifeGuide;
-          this.medicalGuide = goodsListResult.data;
-        }
-      });
+    getTemplateById(this.info).then((res) => {
+      if (res) {
+        let healthGuide = JSON.parse(res.data.data.guide);
+        let goodsListResult = JSON.parse(res.data.data.goodsList);
+        this.dietGuide = healthGuide.dietGuide;
+        this.exerciseGuide = healthGuide.exerciseGuide;
+        this.dailyLifeGuide = healthGuide.dailyLifeGuide;
+        this.medicalGuide = goodsListResult.data;
+      }
+    });
   },
   methods: {
     gotoTemplate() {
