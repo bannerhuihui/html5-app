@@ -2,115 +2,198 @@
   <div class="container">
     <!-- 顶部区域 -->
     <div class="header">
-      <van-nav-bar
-        left-text="返回"
-        left-arrow
-        @click-left="onClickLeft"
-      />
+      <van-nav-bar left-text="返回" left-arrow @click-left="onClickLeft" />
     </div>
-    
+
     <!-- 中间内容区域 -->
     <div class="content">
-       <!-- 进度条 -->
+      <!-- 进度条 -->
       <div class="progress-container">
         <div class="progress-info">当前进度 {{ progress }}%</div>
-        <van-progress class="progress-bar" :percentage="progress" stroke-width="16" :show-pivot="false" color="#6DDED6"/>
+        <van-progress
+          class="progress-bar"
+          :percentage="progress"
+          stroke-width="16"
+          :show-pivot="false"
+          color="#6DDED6"
+        />
       </div>
       <div class="upper-content">
-        <h3>{{ queNo - 1 }}、{{ question.questionContents[0] }}{{ getQuestionTypeText }}</h3>
+        <h3>
+          {{ queNo - 1 }}、{{ question.questionContents[0]
+          }}{{ getQuestionTypeText }}
+        </h3>
       </div>
-      <div class="lower-content-container"> <!-- 设置相对定位 -->
+      <div class="lower-content-container">
+        <!-- 设置相对定位 -->
         <div class="lower-content" v-if="questionType === '1'">
           <div v-for="option in question.options" :key="option.optionCode">
-            <van-button class="base-que-button" :class="{'button-que-button-active': selectedOption === option.optionValue}" :value="option.optionValue" type="primary" block round @click="radioUpd(option.optionValue)">
-              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0] === "嗳气疾病" ? "嗳气疾病（打嗝或打饱嗝）":option.optionContents[0] }}
-            </van-button>           
+            <van-button
+              class="base-que-button"
+              :class="{
+                'button-que-button-active':
+                  selectedOption === option.optionValue,
+              }"
+              :value="option.optionValue"
+              type="primary"
+              block
+              round
+              @click="radioUpd(option.optionValue)"
+            >
+              {{
+                option.optionContents[0] === "脑卒中"
+                  ? "脑卒中（中风）"
+                  : option.optionContents[0] === "嗳气"
+                  ? "嗳气（打嗝或打饱嗝）"
+                  : option.optionContents[0] === "嗳气疾病"
+                  ? "嗳气疾病（打嗝或打饱嗝）"
+                  : option.optionContents[0]
+              }}
+            </van-button>
           </div>
         </div>
         <div class="lower-content" v-if="questionType === '2'">
           <div v-for="option in question.options" :key="option.optionCode">
-            <van-button v-if="option.optionContents[0] !== '甲亢' && option.optionContents[0] !== '甲减'" class="base-que-button" :class="{'button-que-button-active': selectedOptions.includes(option.optionValue)}" :value="option.optionValue" type="primary" block round @click="checkboxUpd(option.optionValue)">
-              {{ option.optionContents[0] === "脑卒中" ? "脑卒中（中风）": option.optionContents[0] === "嗳气" ? "嗳气（打嗝或打饱嗝）": option.optionContents[0] === "嗳气疾病" ? "嗳气疾病（打嗝或打饱嗝）":option.optionContents[0] }}
-            </van-button>           
+            <van-button
+              v-if="
+                option.optionContents[0] !== '甲亢' &&
+                option.optionContents[0] !== '甲减'
+              "
+              class="base-que-button"
+              :class="{
+                'button-que-button-active': selectedOptions.includes(
+                  option.optionValue
+                ),
+              }"
+              :value="option.optionValue"
+              type="primary"
+              block
+              round
+              @click="checkboxUpd(option.optionValue)"
+            >
+              {{
+                option.optionContents[0] === "脑卒中"
+                  ? "脑卒中（中风）"
+                  : option.optionContents[0] === "嗳气"
+                  ? "嗳气（打嗝或打饱嗝）"
+                  : option.optionContents[0] === "嗳气疾病"
+                  ? "嗳气疾病（打嗝或打饱嗝）"
+                  : option.optionContents[0]
+              }}
+            </van-button>
           </div>
         </div>
         <div class="lower-content" v-if="questionType === '5'">
           <div>
             <span class="type-5-6-span">
-              单位：{{ question.optionBuilder.unitCn }}（{{ question.optionBuilder.unit}}）
+              单位：{{ question.optionBuilder.unitCn }}（{{
+                question.optionBuilder.unit
+              }}）
             </span>
           </div>
           <div>
             <span class="type-5-6-span">
-              输入范围：{{question.optionBuilder.minValue}} ~ {{question.optionBuilder.maxValue}}
+              输入范围：{{ question.optionBuilder.minValue }} ~
+              {{ question.optionBuilder.maxValue }}
             </span>
           </div>
-          <div class="input-container"> <!-- 添加一个容器用于居中 -->
+          <div class="input-container">
+            <!-- 添加一个容器用于居中 -->
             <van-cell-group class="que-input-group" inset>
-              <van-field v-model="values[0]" type="number" class="van-field-input" :placeholder="getPlaceholder" input-align="center"
-                :min="question.optionBuilder.minValue" 
-                :max="question.optionBuilder.maxValue" ></van-field>
+              <van-field
+                v-model="values[0]"
+                type="number"
+                class="van-field-input"
+                :placeholder="getPlaceholder"
+                input-align="center"
+                :min="question.optionBuilder.minValue"
+                :max="question.optionBuilder.maxValue"
+              ></van-field>
             </van-cell-group>
           </div>
           <div v-if="!question.required">
-            <a class="skip-a-a" href="#" @click.prevent="skipQuestion">暂时无法提供，直接跳过</a>
+            <a class="skip-a-a" href="#" @click.prevent="skipQuestion"
+              >暂时无法提供，直接跳过</a
+            >
           </div>
         </div>
         <div class="lower-content" v-if="questionType === '6'">
           <div>
-            <span class="type-5-6-span">
-              单位：毫米汞柱（mmHg）
-            </span>
+            <span class="type-5-6-span"> 单位：毫米汞柱（mmHg） </span>
           </div>
           <div v-for="(option, index) in question.optionBuilders" :key="index">
             <div>
               <span class="type-5-6-span">
-                输入范围：{{option.minValue}} ~ {{option.maxValue}}
+                输入范围：{{ option.minValue }} ~ {{ option.maxValue }}
               </span>
             </div>
-            <div class="input-container"> <!-- 添加一个容器用于居中 -->
+            <div class="input-container">
+              <!-- 添加一个容器用于居中 -->
               <van-cell-group class="que-input-group" inset>
-                <van-field v-model="values[index]" type="number" class="van-field-input" input-align="center" 
-                  :placeholder="placeholder(option.optionContent)" 
+                <van-field
+                  v-model="values[index]"
+                  type="number"
+                  class="van-field-input"
+                  input-align="center"
+                  :placeholder="placeholder(option.optionContent)"
                   :min="option.minValue"
-                  :max="option.maxValue" 
-                  @change="validateInputOther($event, index)"></van-field>
+                  :max="option.maxValue"
+                  @change="validateInputOther($event, index)"
+                ></van-field>
               </van-cell-group>
             </div>
           </div>
           <div v-if="!question.required">
-              <a class="skip-a-a" href="#" @click.prevent="skipQuestion">暂时无法提供，直接跳过</a>
-            </div>
+            <a class="skip-a-a" href="#" @click.prevent="skipQuestion"
+              >暂时无法提供，直接跳过</a
+            >
+          </div>
         </div>
       </div>
-      
     </div>
     <!-- 底部区域 -->
     <div class="footer">
-      <van-button 
-        type="primary" 
-        class="previous-button" 
-        @click="onPrevious" round size="large">
+      <van-button
+        type="primary"
+        class="previous-button"
+        @click="onPrevious"
+        round
+        size="large"
+      >
         上一题
       </van-button>
       <van-button
-        :style="{ backgroundColor: (values.length > 0 || selectedOptions.length > 0) ? '#50d2c8' : 'rgba(80, 210, 200, 0.5)', color: (values.length > 0 || selectedOptions.length > 0) ? '#FFF' : '#FFF', cursor: (values.length > 0 || selectedOptions.length > 0) ? 'pointer' : 'not-allowed' }" 
-        :disabled="!(values.length > 0 || selectedOptions.length > 0)" 
-        @click="onNext" 
-        class="next-button" round size="large">
-        {{ last ? "提交":"下一题" }}
+        :style="{
+          backgroundColor:
+            values.length > 0 || selectedOptions.length > 0
+              ? '#50d2c8'
+              : 'rgba(80, 210, 200, 0.5)',
+          color:
+            values.length > 0 || selectedOptions.length > 0 ? '#FFF' : '#FFF',
+          cursor:
+            values.length > 0 || selectedOptions.length > 0
+              ? 'pointer'
+              : 'not-allowed',
+        }"
+        :disabled="!(values.length > 0 || selectedOptions.length > 0)"
+        @click="onNext"
+        class="next-button"
+        round
+        size="large"
+      >
+        {{ last ? "提交" : "下一题" }}
       </van-button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'; // 导入 axios
+import axios from "axios"; // 导入 axios
 export default {
-  name: 'QuePage',
+  name: "QuePage",
   data() {
     return {
-      questionType: '',
+      questionType: "",
       question: {
         questionContents: [],
         preContents: [],
@@ -119,50 +202,50 @@ export default {
         imageUrls: [],
         required: false,
         options: [],
-        questionContent: '',
-        defaultOptionCode: '',
+        questionContent: "",
+        defaultOptionCode: "",
         optionBuilder: {
-          optionCode: '',
+          optionCode: "",
           required: false,
-          optionContent: '',
+          optionContent: "",
           supplementContents: [],
           minValue: 0,
           maxValue: 0,
           defaultValue: 0,
           step: 0,
-          unit: '',
-          unitCn: '',
-          style: ''
+          unit: "",
+          unitCn: "",
+          style: "",
         },
         optionNodes: [],
         optionBuilders: [],
-        supplementContent: '',
+        supplementContent: "",
       },
       values: [],
       id: 0,
       queNo: 0,
       last: false,
-      appName: '',
-      appType: '',
-      queId: '',
-      questionCode: '',
+      appName: "",
+      appType: "",
+      queId: "",
+      questionCode: "",
       selectedOptions: [], //复选框
       selectedOption: null, // 添加状态变量
       totalCount: 0,
       showError: false,
       overflow: false, // 新增状态变量
       isScrolling: false, // 新增状态变量
-    }
+    };
   },
   computed: {
     getQuestionTypeText() {
       switch (this.questionType) {
-        case '1':
-          return '（单选题）';
-        case '2':
-          return '（多选题）';
+        case "1":
+          return "（单选题）";
+        case "2":
+          return "（多选题）";
         default:
-          return '';
+          return "";
       }
     },
     progress() {
@@ -170,20 +253,20 @@ export default {
     },
     getPlaceholder() {
       switch (this.questionCode) {
-        case 'FBG':
-          return '请输入，血糖值';
-        case 'PBG':
-          return '请输入，血糖值';
-        case 'code3':
-          return '请输入内容3';
+        case "FBG":
+          return "请输入，血糖值";
+        case "PBG":
+          return "请输入，血糖值";
+        case "code3":
+          return "请输入内容3";
         default:
-          return '请输入内容'; // 默认提示
+          return "请输入内容"; // 默认提示
       }
     },
   },
   watch: {
     // 监听 options 的变化
-    'question.options': {
+    "question.options": {
       handler() {
         this.$nextTick(() => {
           this.checkOverflow(); // 在数据更新后检查是否溢出
@@ -195,21 +278,22 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.checkOverflow(); // 初始检查
-      const container = this.$el.querySelector('.lower-content-container');
+      const container = this.$el.querySelector(".lower-content-container");
       if (container) {
-        container.addEventListener('scroll', this.handleScroll); // 监听滚动事件
+        container.addEventListener("scroll", this.handleScroll); // 监听滚动事件
       }
     });
   },
-  beforeUnmount() { // 修改为 beforeUnmount
-    const container = this.$el.querySelector('.lower-content-container');
+  beforeUnmount() {
+    // 修改为 beforeUnmount
+    const container = this.$el.querySelector(".lower-content-container");
     if (container) {
-      container.removeEventListener('scroll', this.handleScroll); // 移除滚动事件监听
+      container.removeEventListener("scroll", this.handleScroll); // 移除滚动事件监听
     }
   },
   methods: {
     checkOverflow() {
-      const container = this.$el.querySelector('.lower-content-container');
+      const container = this.$el.querySelector(".lower-content-container");
       if (container) {
         this.overflow = container.scrollHeight > container.clientHeight; // 更新 overflow 状态
         this.isOverflow = this.overflow; // 更新 isOverflow 状态
@@ -232,13 +316,16 @@ export default {
         this.selectedOptions = [];
         this.selectedOption = null;
         let queData = {
-          "id": this.id,
-          "queNo": this.queNo - 1
-        }
-        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/before", queData,
-          { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
-        .then(res => {
-          const data = res.data;
+          id: this.id,
+          queNo: this.queNo - 1,
+        };
+        axios
+          .post("https://demo.rtyouth.com/ai/info/yuanmeng/before", queData, {
+            method: "post",
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+          })
+          .then((res) => {
+            const data = res.data;
             if (data.code === 2000) {
               this.values = [];
               this.selectedOptions = [];
@@ -251,62 +338,114 @@ export default {
               this.questionCode = data.data.questionCode;
               this.question = JSON.parse(data.data.question);
             }
-        }).catch(err => { console.log(err) })
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
     onNext() {
       let baseData = null;
       // 判断是不是必填项
-      if (this.question.required && (this.values.length > 0 || this.selectedOptions.length > 0)) {
-        if (this.questionType === '1') {
+      if (
+        this.question.required &&
+        (this.values.length > 0 || this.selectedOptions.length > 0)
+      ) {
+        if (this.questionType === "1") {
           baseData = {
             queNo: this.queNo,
             id: this.id,
             data: {
-              values: this.values
-              }
-            }
-        } else if (this.questionType === '2') {
+              values: this.values,
+            },
+          };
+        } else if (this.questionType === "2") {
           baseData = {
             queNo: this.queNo,
             id: this.id,
             data: {
-              values: this.selectedOptions
-            }
-          }
+              values: this.selectedOptions,
+            },
+          };
         }
         //获取下一页的问题
         if (this.last) {
-          console.log("---> 我是最后页的参数")
-          console.log(baseData)
-          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData,
-            {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
-          .then(res => {
-            
-            if(res && res.data.code === 2000){    
-              const pageInfo = {
-                id: res.data.data.id,
-                goodsList: res.data.data.goodsList
-              }          
-              this.$router.push({ path: "/queEnd",query: {info: JSON.stringify(pageInfo)}})
-            }else if(res && res.data.code === 4013){
-              const pageLastInfo = {
-                id: res.data.data.id,
-                appName: res.data.data.appName,
-                appType: res.data.data.appType,
-                callBackUrl: res.data.data.callBackUrl,
-                callBackType: res.data.data.callBackType,
-                callBackBody: res.data.data.callBackBody
+          console.log("---> 我是最后页的参数");
+          console.log(baseData);
+          axios
+            .post("https://demo.rtyouth.com/ai/info/yuanmeng/end", baseData, {
+              method: "post",
+              headers: { "Content-Type": "application/json;charset=UTF-8" },
+            })
+            .then((res) => {
+              if (res && res.data.code === 2000) {
+                const pageInfo = {
+                  id: res.data.data.id,
+                  goodsList: res.data.data.goodsList,
+                };
+                this.$router.push({
+                  path: "/queEnd",
+                  query: { info: JSON.stringify(pageInfo) },
+                });
+              } else if (res && res.data.code === 4013) {
+                const pageLastInfo = {
+                  id: res.data.data.id,
+                  appName: res.data.data.appName,
+                  appType: res.data.data.appType,
+                  callBackUrl: res.data.data.callBackUrl,
+                  callBackType: res.data.data.callBackType,
+                  callBackBody: res.data.data.callBackBody,
+                };
+                this.$router.push({
+                  path: "/success",
+                  query: { info: JSON.stringify(pageLastInfo) },
+                });
               }
-              this.$router.push({ path: "/success",query: {info: JSON.stringify(pageLastInfo)}})
-            }
-          }).catch(err => { console.log(err) })
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         } else {
-          console.log("---> 我是普通页的参数")
-          console.log(baseData)
-          axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
-            {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
-          .then(res => {
+          console.log("---> 我是普通页的参数");
+          console.log(baseData);
+          axios
+            .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
+              method: "post",
+              headers: { "Content-Type": "application/json;charset=UTF-8" },
+            })
+            .then((res) => {
+              let data = res.data;
+              if (data.code === 2000) {
+                this.values = [];
+                this.selectedOptions = [];
+                this.selectedOption = null;
+                this.id = data.data.id;
+                this.questionType = data.data.questionType;
+                this.queNo = data.data.queNo;
+                this.last = data.data.last;
+                this.questionCode = data.data.questionCode;
+                this.totalCount = data.data.total;
+                this.question = JSON.parse(data.data.question);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      } else {
+        baseData = {
+          queNo: this.queNo,
+          id: this.id,
+          data: {
+            values: this.values,
+          },
+        };
+        axios
+          .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
+            method: "post",
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+          })
+          .then((res) => {
             let data = res.data;
             if (data.code === 2000) {
               this.values = [];
@@ -317,44 +456,21 @@ export default {
               this.queNo = data.data.queNo;
               this.last = data.data.last;
               this.questionCode = data.data.questionCode;
-              this.totalCount = data.data.total;
               this.question = JSON.parse(data.data.question);
+              this.totalCount = data.data.total;
             }
-          }).catch(err => { console.log(err) })
-        }
-      } else {
-        baseData = {
-          queNo: this.queNo,
-          id: this.id,
-          data: {
-            values: this.values
-          }
-        }
-        axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
-          {method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" }})
-        .then(res => {
-          let data = res.data;
-          if (data.code === 2000) {
-            this.values = [];
-            this.selectedOptions = [];
-            this.selectedOption = null;
-            this.id = data.data.id;
-            this.questionType = data.data.questionType;
-            this.queNo = data.data.queNo;
-            this.last = data.data.last;
-            this.questionCode = data.data.questionCode;
-            this.question = JSON.parse(data.data.question);
-            this.totalCount = data.data.total;
-          }
-        }).catch(err => { console.log(err) })
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
     radioUpd(value) {
       this.selectedOption = this.selectedOption === value ? null : value; // 切换选中的按钮
-      if(this.selectedOption){
-          this.values = [value];
-      }else{
-          this.values = [];
+      if (this.selectedOption) {
+        this.values = [value];
+      } else {
+        this.values = [];
       }
     },
     checkboxUpd(value) {
@@ -362,12 +478,16 @@ export default {
       if (index === -1) {
         this.selectedOptions.push(value);
         //互斥逻辑
-        this.question.options.forEach(option => {
+        this.question.options.forEach((option) => {
           if (option.excludeOptionValues) {
             if (this.selectedOptions.indexOf(option.optionValue) !== -1) {
-              if (this.selectedOptions[this.selectedOptions.length - 1] === option.optionValue) {
-                option.excludeOptionValues.forEach(excludeValue => {
-                  const excludeIndex = this.selectedOptions.indexOf(excludeValue);
+              if (
+                this.selectedOptions[this.selectedOptions.length - 1] ===
+                option.optionValue
+              ) {
+                option.excludeOptionValues.forEach((excludeValue) => {
+                  const excludeIndex =
+                    this.selectedOptions.indexOf(excludeValue);
                   if (excludeIndex !== -1) {
                     this.selectedOptions.splice(excludeIndex, 1);
                   }
@@ -389,34 +509,40 @@ export default {
         queNo: this.queNo,
         id: this.id,
         data: {
-          values: this.values
-        }
-      }
-      axios.post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData,
-        { method: "post", headers: { "Content-Type": "application/json;charset=UTF-8" } })
-      .then(res => {
-        let data = res.data;
-        if (data.code === 2000) {
-          this.values = [];
-          this.selectedOptions = [];
-          this.selectedOption = null;
-          this.id = data.data.id;
-          this.questionType = data.data.questionType;
-          this.queNo = data.data.queNo;
-          this.last = data.data.last;
-          this.questionCode = data.data.questionCode;
-          this.totalCount = data.data.total;
-          this.question = JSON.parse(data.data.question);
-        }
-      }).catch(err => { console.log(err) })
+          values: this.values,
+        },
+      };
+      axios
+        .post("https://demo.rtyouth.com/ai/info/yuanmeng/next", baseData, {
+          method: "post",
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+        })
+        .then((res) => {
+          let data = res.data;
+          if (data.code === 2000) {
+            this.values = [];
+            this.selectedOptions = [];
+            this.selectedOption = null;
+            this.id = data.data.id;
+            this.questionType = data.data.questionType;
+            this.queNo = data.data.queNo;
+            this.last = data.data.last;
+            this.questionCode = data.data.questionCode;
+            this.totalCount = data.data.total;
+            this.question = JSON.parse(data.data.question);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     placeholder(value) {
-      if (value === '收缩压') {
-        value = '高血压'
+      if (value === "收缩压") {
+        value = "高血压";
       } else {
-        value = '低血压'
+        value = "低血压";
       }
-      return '请输入，' + value;
+      return "请输入，" + value;
     },
     validateInputOther(event, index) {
       const inputValue = parseFloat(event.target.value); // 获取输入框的值并转换为数字
@@ -432,8 +558,8 @@ export default {
       }
     },
   },
-  created(){
-    const  _info = this.$route?.query?.info;
+  created() {
+    const _info = this.$route?.query?.info;
     let baseInfo = JSON.parse(_info);
     this.id = baseInfo.id;
     this.questionType = baseInfo.questionType;
@@ -443,16 +569,16 @@ export default {
     this.appName = baseInfo.appName;
     this.appType = baseInfo.appType;
     this.queId = baseInfo.queId;
-    this.totalCount = baseInfo.total
-  }
-}
+    this.totalCount = baseInfo.total;
+  },
+};
 </script>
 
 <style scoped>
 .container {
   display: flex;
   flex-direction: column;
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 .header {
@@ -500,7 +626,7 @@ export default {
 }
 
 .van-field-input {
-  background-color: #F6F6F6;
+  background-color: #f6f6f6;
   font-size: 1rem;
   font-weight: bold;
   color: black;
@@ -521,11 +647,11 @@ export default {
 
 .skip-a-a {
   text-decoration: underline; /* 添加下划线 */
-  color: #0083FE; /* 可选：设置链接颜色 */
+  color: #0083fe; /* 可选：设置链接颜色 */
 }
 
 .base-que-button {
-  background-color: #F6F6F6;
+  background-color: #f6f6f6;
   color: #000;
   border: none;
   margin-bottom: 1.5rem;
@@ -544,11 +670,11 @@ export default {
   display: flex;
   justify-content: space-around;
   padding: 0.5rem; /* 减少上下内边距 */
-  background-color: #FFF; /* 可选：设置背景颜色 */
+  background-color: #fff; /* 可选：设置背景颜色 */
 }
 
 .previous-button {
-  background-color: #FFF;
+  background-color: #fff;
   color: #50d2c8; /* 文字颜色 */
   border: 1px solid #50d2c8; /* 边框颜色 */
   margin-right: 0.5rem;
