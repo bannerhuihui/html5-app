@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import {getLastType} from "../../api/manager.js"
+import { getLastType } from "../../api/manager.js";
 export default {
   name: "QueEndPage",
   data() {
@@ -83,37 +83,62 @@ export default {
         id: this.id,
         value: this.value,
       };
-      getLastType(baseData).then((res) =>{
+      getLastType(baseData).then((res) => {
         if (res && res.data.code === 2000) {
-            //到成功页
-            const pageInfo = {
-              id: res.data.data.id,
-              appName: res.data.data.appName,
-              appType: res.data.data.appType,
-              callBackUrl: res.data.data.callBackUrl,
-              callBackType: res.data.data.callBackType,
-              callBackBody: res.data.data.callBackBody,
-            };
-            this.$router.push({
-              path: "/success",
-              query: { info: JSON.stringify(pageInfo) },
-            });
-          } else if (res && res.data.code === 4013) {
-            //到成功页
-            const pageInfo = {
-              id: res.data.data.id,
-              appName: res.data.data.appName,
-              appType: res.data.data.appType,
-              callBackUrl: res.data.data.callBackUrl,
-              callBackType: res.data.data.callBackType,
-              callBackBody: res.data.data.callBackBody,
-            };
+          //到成功页
+          const pageInfo = {
+            id: res.data.data.id,
+            appName: res.data.data.appName,
+            appType: res.data.data.appType,
+            callBackUrl: res.data.data.callBackUrl,
+            callBackType: res.data.data.callBackType,
+            callBackBody: res.data.data.callBackBody,
+          };
+          if (res.data.data.callBackUrl) {
+            console.log("----> 开始跳转")
+            if (res.data.data.callBackType === "GET" || res.data.data.callBackType === "get") {
+              // 使用GET请求跳转
+              const url = new URL(res.data.data.callBackUrl+res.data.data.callBackBody);
+              window.location.href = url.toString();
+            } else if (res.data.data.callBackType === "POST" || res.data.data.callBackType === "post") {
+              // 使用POST请求跳转
+              const form = document.createElement("form");
+              form.method = "POST";
+              form.action = res.data.data.callBackUrl;
+
+              Object.keys(res.data.data.callBackBody).forEach((key) => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = key;
+                input.value = res.data.data.callBackBody[key];
+                form.appendChild(input);
+              });
+
+              document.body.appendChild(form);
+              form.submit();
+            }
+          } else {
             this.$router.push({
               path: "/success",
               query: { info: JSON.stringify(pageInfo) },
             });
           }
-      })
+        } else if (res && res.data.code === 4013) {
+          //到成功页
+          const pageInfo = {
+            id: res.data.data.id,
+            appName: res.data.data.appName,
+            appType: res.data.data.appType,
+            callBackUrl: res.data.data.callBackUrl,
+            callBackType: res.data.data.callBackType,
+            callBackBody: res.data.data.callBackBody,
+          };
+          this.$router.push({
+            path: "/success",
+            query: { info: JSON.stringify(pageInfo) },
+          });
+        }
+      });
     },
     onClickLeft() {
       this.$router.go(-1); // 返回上一页
