@@ -14,21 +14,21 @@
       </div>
       <div class="base-item-body">
         <div v-if="info">
-            <div v-for="item in info.dailyLifeModes" :key="item.type">
-                <div class="base-chat">
-                    <div class="base-chat-img">
-                        <img :src="item.imageUrl" alt="">
-                    </div>
-                    <div class="base-chat-ul">
-                        <div class="base-chat-ul-title">
-                            {{item.title}}
-                        </div>
-                        <div class="base-chat-ul-p">
-                            {{item.descriptions[0]}}
-                        </div>
-                    </div>
+          <div v-for="item in info.dailyLifeModes" :key="item.type">
+            <div class="base-chat">
+              <div class="base-chat-img">
+                <img :src="item.imageUrl" alt="" />
+              </div>
+              <div class="base-chat-ul">
+                <div class="base-chat-ul-title">
+                  {{ item.title }}
                 </div>
+                <div class="base-chat-ul-p">
+                  {{ item.descriptions[0] }}
+                </div>
+              </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -36,20 +36,16 @@
 </template>
 <script>
 export default {
-    name: "LifestylePage",
-    data() {
-        return {
-            
-        }
+  name: "LifestylePage",
+  data() {
+    return {};
+  },
+  props: {
+    info: {
+      type: Object,
+      default: () => ({}), // 默认值为空对象
     },
-    props:{
-        info:{
-            type: Object,
-            default: () => ({}) // 默认值为空对象
-        }
-    },
-    created(){
-
-    }
-}
+  },
+  created() {},
+};
 </script>
