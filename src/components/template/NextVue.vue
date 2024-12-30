@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       imgUrl: "https://resource.cn-bj.ufileos.com/img/template-tes.jpg",
-      titleMessage: "远盟健康指导报告",
+      titleMessage: "健康指导报告",
       dietGuide: null,
       exerciseGuide: null,
       dailyLifeGuide: null,

@@ -146,7 +146,7 @@ export default {
   data() {
     return {
       imgUrl: "https://resource.cn-bj.ufileos.com/img/template-tes.jpg",
-      titleMessage: "远盟健康评估报告",
+      titleMessage: "健康评估报告",
       userInfo: {
         gender: "",
         age: 0,

@@ -141,6 +141,7 @@ export default {
     //判断问卷是不是可用
     checkUrl(this.appName, this.appType, this.queId).then((res) => {
       if (res) {
+        console.log(res)
         let message = res.data;
         if (message) {
           if (message.code === 2000) {
