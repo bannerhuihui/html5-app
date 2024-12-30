@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = "https://demo.rtyouth.com/";
-//const baseUrl = "https://ym.rtyouth.com/"
+const baseUrl = "http://token.rtyouth.com/";
 
 // 创建 axios 实例
 const api = axios.create({
