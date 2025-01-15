@@ -6,6 +6,11 @@ const routes = [
     path: '/pay/order',
     name: 'H5PayFirst',
     component: () => import('@/components/pay/H5PayFirst.vue')
+  },
+  {
+    path: '/pay/wx/order',
+    name: 'WxH5PayFirst',
+    component: () => import('@/components/pay/WxH5PayFirst.vue')
   }
 
 ]
